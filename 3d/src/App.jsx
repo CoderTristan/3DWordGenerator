@@ -16,24 +16,16 @@ function App() {
   const breakText = (input, maxLineLength = 20) => {
     if (!input) return "";
     
-    // Use a regular expression to find all characters up to the max length, 
-    // but without breaking existing newline structure.
     const regex = new RegExp(`(.{1,${maxLineLength}})`, 'g');
     
-    // Split the text by existing newlines first
     return input.split('\n')
-        .map(line => line.replace(regex, '$1\n').trim()) // Insert \n and clean up
-        .join('\n'); // Rejoin the original lines
+        .map(line => line.replace(regex, '$1\n').trim())
+        .join('\n');
 };
 
 const handleTextChange = (event) => {
     const rawText = event.target.value;
-    
-    // Use the function to process the text and set the state
-    const wrappedText = breakText(rawText, 20); 
-    
-    // Note: This will result in text being re-processed on every keypress, 
-    // which can feel jumpy or confusing to the user.
+    const wrappedText = breakText(rawText, 40); 
     setText(wrappedText);
 };
 
@@ -44,7 +36,7 @@ const handleTextChange = (event) => {
       <Canvas style={{ background: '#222233' }} camera={{ position: [0,0,5], fov: 75 }}>
         <ambientLight intensity={.4} />
         <pointLight position={[10, 10, 5]} intensity={.8} />
-        <OrbitControls enableZoom={true} enablePan={false} />
+        <OrbitControls enableZoom={true} enablePan={true} />
 
         <WordModel text={text} rotate={rotate} color={color} />
 
@@ -53,15 +45,22 @@ const handleTextChange = (event) => {
       value={text}
       onChange={handleTextChange}
        placeholder="text change here" 
-       type="text"
        rows={5}
-       cols={20}
+       cols={40}
        style={{ 
           position: 'absolute', 
           top: '100px', 
           left: '20px',
-          overflowWrap: 'break-word',
-          whiteSpace: 'pre-wrap',
+          zIndex: 10
+        }}/>
+        <input 
+        type="color" 
+        value={color}
+        onChange={(e) => setColor(e.target.value)}
+        style={{ 
+          position: 'absolute', 
+          top: '60px', 
+          left: '20px', 
           zIndex: 10
         }}/>
       <button
